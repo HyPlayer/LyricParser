@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LrcParser.Classes
 {
@@ -9,7 +7,7 @@ namespace LrcParser.Classes
         public string CurrentWords;
         public TimeSpan StartTime;
         public TimeSpan Duration;
-        public KaraokeWordInfo(string currentWords, TimeSpan startTime, TimeSpan duration) 
+        public KaraokeWordInfo(string currentWords, TimeSpan startTime, TimeSpan duration)
         {
             CurrentWords = currentWords;
             StartTime = startTime;

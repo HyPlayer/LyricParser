@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LrcParser.Classes
 {
-    public class LrcLyricsLine : LyricLineBase
+    public class LrcLyricsLine : ILyricLine
     {
+        public string CurrentLyric { get; }
+        public TimeSpan StartTime { get; }
         public LrcLyricsLine(string currentLyric, TimeSpan startTime)
         {
             CurrentLyric = currentLyric;

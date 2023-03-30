@@ -1,22 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LrcParser.Classes
 {
-    public class LrcLyricsData
+    public class LyricsData : IDisposable
     {
-        public IList<LrcLyricsLine> LyricsLines { get; }
-        public LrcLyricsData(IList<LrcLyricsLine> lyricsLines)
+        public IList<ILyricLine> LyricsLines { get; }
+        public bool IsKaraokeLyrics => LyricsLines.FirstOrDefault() is KaraokeLyricsLine;
+        public LyricsData(IList<ILyricLine> lyricsLines)
         {
             LyricsLines = lyricsLines;
         }
-    }
-    public class KaraokeLyricsData
-    {
-        public IList<KaraokeLyricsLine> LyricsLines { get; }
-        public KaraokeLyricsData(IList<KaraokeLyricsLine> lyricsLines)
+        ~LyricsData()
         {
-            LyricsLines = lyricsLines;
+            Dispose(true);
+        }
+        public void Dispose(bool isByFinalization)
+        {
+            if (!isByFinalization) GC.SuppressFinalize(this);
+            LyricsLines.Clear();
+        }
+
+        public void Dispose()
+        {
+            Dispose(false);
         }
     }
 }
