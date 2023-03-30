@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LrcParser", "LrcParser\LrcParser.csproj", "{92A07FF2-4081-46A8-8C3E-4BC6022626FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LrcParser", "LrcParser\LrcParser.csproj", "{92A07FF2-4081-46A8-8C3E-4BC6022626FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyricParser.Demo", "LyricParser.Demo\LyricParser.Demo.csproj", "{DC88FA0B-F9C4-40FC-A69D-A44EEFF8578B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{92A07FF2-4081-46A8-8C3E-4BC6022626FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92A07FF2-4081-46A8-8C3E-4BC6022626FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92A07FF2-4081-46A8-8C3E-4BC6022626FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC88FA0B-F9C4-40FC-A69D-A44EEFF8578B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC88FA0B-F9C4-40FC-A69D-A44EEFF8578B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC88FA0B-F9C4-40FC-A69D-A44EEFF8578B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC88FA0B-F9C4-40FC-A69D-A44EEFF8578B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

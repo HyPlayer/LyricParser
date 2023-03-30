@@ -8,8 +8,8 @@ namespace LrcParser.Implementation
 {
     public static class LyricParser
     {
-        private static readonly Regex LrcTimestampRegex = new Regex(@"^\[(?'minutes'\d+):(?'seconds'\d+(\.\d+)?)\]$");
-        private static readonly Regex LrcOffsetRegex = new Regex(@"^offset:(?'content'.*)$");
+        private static readonly Regex LrcTimestampRegex = new Regex(@"\[(?'minutes'\d+):(?'seconds'\d+(\.\d+)?)\]");
+        private static readonly Regex LrcOffsetRegex = new Regex(@"\[offset:(?'content'.*)\]");
         public static LyricsData ParseKaraokeLyrics(string karaokeLyrics)
         {
             throw new NotImplementedException();
@@ -18,7 +18,7 @@ namespace LrcParser.Implementation
         {
             if (lrcLyrics is null) throw new ArgumentNullException("lrcLyrics");
             var pureLyricArray = lrcLyrics.Replace("\r\n", "\n").Replace("\r", "\n").Split("\n");
-            var lyricOffset = TimeSpan.Zero;
+            var lyricOffset = new TimeSpan();
             var rawLyricsList = new List<ILyricLine>();
             var offsetString = pureLyricArray.Where(t => t.StartsWith("[offset:")).ToList();
             if (offsetString.Count > 0)
@@ -33,7 +33,7 @@ namespace LrcParser.Implementation
             foreach (var pureLyric in pureLyricArray)
             {
                 var lastIndex = pureLyric.LastIndexOf(']');
-                var lyricString = pureLyric.Substring(lastIndex);
+                var lyricString = pureLyric.Substring(lastIndex +1);
                 var matchResult = LrcTimestampRegex.Matches(pureLyric);
                 foreach (var lyricTimeResult in matchResult)
                 {
