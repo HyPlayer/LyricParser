@@ -2,7 +2,7 @@
 using LrcParser.Classes;
 using LrcParser.Implementation;
 
-var sourceData = "[offset:0]\r\n[01:34.68]说很简单\r\n[00:38.50]但是做却很难\r\n[00:53.00][01:43.88][02:11.23]虽然无所谓写在脸上";
+var pureLrcData = "[offset:0]\r\n[01:34.68]说很简单\r\n[00:38.50]但是做却很难\r\n[00:53.00][01:43.88][02:11.23]虽然无所谓写在脸上";
 var pureLrcResult = LyricParser.ParseLrcLyrics(pureLrcData);
 foreach (var item in pureLrcResult.LyricsLines)
 {
