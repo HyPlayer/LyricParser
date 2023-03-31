@@ -12,15 +12,37 @@ namespace LrcParser.Implementation
         private static readonly Regex LrcOffsetRegex = new Regex(@"\[offset:(?'content'.*)\]");
         public static LyricsData ParseKaraokeLyrics(string karaokeLyrics)
         {
-            throw new NotImplementedException();
+            var rawLyricList = karaokeLyrics.Split('\n').ToList();
+            var resultLyricList = new List<ILyricLine>();
+            foreach (var lyricLine in rawLyricList)
+            {
+                if (!lyricLine.StartsWith('[')) continue;
+                var rawTimestamp = lyricLine.Substring(1, lyricLine.IndexOf(',', 1) - 1);
+                var timestamp = double.Parse(rawTimestamp);
+                var rawLyricData = lyricLine.Substring(lyricLine.IndexOf(']') + 1);
+                var lyricWords = Regex.Split(rawLyricData, "\\([0-9]*,[0-9]*,0\\)").ToList().Skip(1).ToList();
+                var lyricWordInfos = Regex.Matches(rawLyricData, "\\(([0-9]*),([0-9]*),0\\)").ToList();
+                var wordInfoList = new List<KaraokeWordInfo>();
+                for (var index = 0; index < lyricWordInfos.Count; index++)
+                {
+                    if (lyricWordInfos[index].Length <= 0) continue;
+                    var startTime = double.Parse(lyricWordInfos[index].Groups[1].Value);
+                    var duration = double.Parse(lyricWordInfos[index].Groups[2].Value);
+                    var wordInfo = new KaraokeWordInfo(string.Concat(lyricWords[index]), TimeSpan.FromMilliseconds(startTime), TimeSpan.FromMilliseconds(duration));
+                    wordInfoList.Add(wordInfo);
+                }
+                var resultLyricLine = new KaraokeLyricsLine(wordInfoList, TimeSpan.FromMilliseconds(timestamp));
+                resultLyricList.Add(resultLyricLine);
+            }
+            return new LyricsData(resultLyricList);
         }
         public static LyricsData ParseLrcLyrics(string lrcLyrics)
         {
             if (lrcLyrics is null) throw new ArgumentNullException("lrcLyrics");
-            var pureLyricArray = lrcLyrics.Replace("\r\n", "\n").Replace("\r", "\n").Split("\n");
-            var lyricOffset = new TimeSpan();
+            var pureLyricList = lrcLyrics.Replace("\r\n", "\n").Replace("\r", "\n").Split("\n").ToList();
+            var lyricOffset = TimeSpan.Zero;
             var rawLyricsList = new List<ILyricLine>();
-            var offsetString = pureLyricArray.Where(t => t.StartsWith("[offset:")).ToList();
+            var offsetString = pureLyricList.Where(t => t.StartsWith("[offset:")).ToList();
             if (offsetString.Count > 0)
             {
                 if (offsetString.Count > 1) throw new FormatException("Multiple offsets were found");
@@ -30,10 +52,9 @@ namespace LrcParser.Implementation
                     lyricOffset = TimeSpan.FromMilliseconds(double.Parse(matchResult.Groups["content"].Value));
                 }
             }
-            foreach (var pureLyric in pureLyricArray)
+            foreach (var pureLyric in pureLyricList)
             {
-                var lastIndex = pureLyric.LastIndexOf(']');
-                var lyricString = pureLyric.Substring(lastIndex +1);
+                var lyricString = pureLyric.Substring(pureLyric.LastIndexOf(']') + 1);
                 var matchResult = LrcTimestampRegex.Matches(pureLyric);
                 foreach (var lyricTimeResult in matchResult)
                 {
