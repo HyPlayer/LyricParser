@@ -18,12 +18,13 @@ namespace LrcParser.Implementation
             var resultLyricList = new List<ILyricLine>();
             foreach (var lyricLine in rawLyricList)
             {
-                if (!lyricLine.StartsWith('[')) continue;
-                var rawTimestamp = lyricLine.Substring(1, lyricLine.IndexOf(',', 1) - 1);
+                var lyricLineSpan = lyricLine.AsSpan();
+                if (!(lyricLineSpan[0] == '[')) continue;
+                var rawTimestamp = lyricLineSpan.Slice(1, lyricLineSpan.IndexOf(',') - 1);
                 var timestamp = double.Parse(rawTimestamp);
-                var rawLyricData = lyricLine.Substring(lyricLine.IndexOf(']') + 1);
-                var lyricWords = KaraokeWordRegex.Split(rawLyricData).ToList().Skip(1).ToList();
-                var lyricWordInfos = KaraokeWordInfosRegex.Matches(rawLyricData).ToList();
+                var rawLyricData = lyricLineSpan.Slice(lyricLine.IndexOf(']') + 1);
+                var lyricWords = KaraokeWordRegex.Split(rawLyricData.ToString()).ToList().Skip(1).ToList();
+                var lyricWordInfos = KaraokeWordInfosRegex.Matches(rawLyricData.ToString()).ToList();
                 var wordInfoList = new List<KaraokeWordInfo>();
                 for (var index = 0; index < lyricWordInfos.Count; index++)
                 {
@@ -56,14 +57,15 @@ namespace LrcParser.Implementation
             }
             foreach (var pureLyric in pureLyricList)
             {
-                var lyricString = pureLyric.Substring(pureLyric.LastIndexOf(']') + 1);
+                var pureLyricSpan = pureLyric.AsSpan();
+                var lyricString = pureLyricSpan.Slice(pureLyricSpan.LastIndexOf(']') + 1);
                 var matchResult = LrcTimestampRegex.Matches(pureLyric);
                 foreach (var lyricTimeResult in matchResult)
                 {
                     var minutes = int.Parse(((Match)lyricTimeResult).Groups["minutes"].Value);
                     var seconds = double.Parse(((Match)lyricTimeResult).Groups["seconds"].Value);
                     var timestamp = TimeSpan.FromSeconds(minutes * 60 + seconds).Add(lyricOffset);
-                    rawLyricsList.Add(new LrcLyricsLine(lyricString, timestamp));
+                    rawLyricsList.Add(new LrcLyricsLine(lyricString.ToString(), timestamp));
                 }
             }
             var resultLyricsList = rawLyricsList.OrderBy(t => t.StartTime).ToList();
