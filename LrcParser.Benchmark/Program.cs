@@ -11,6 +11,7 @@ namespace MyBenchmarks
 {
     public class Program
     {
+        [MemoryDiagnoser]
         public class RegexPraserVsLrcParser
         {
             public string SongLyric = string.Empty;
@@ -32,37 +33,32 @@ namespace MyBenchmarks
 
             public void OpportunityLiuLrcParser()
             {
-                for (int i = 0; i < 10000; i++)
-                {
-                    var lyricDataResult = Lyrics.Parse(SongLyric);
-                }
+                var lyricDataResult = Lyrics.Parse(SongLyric);
+                foreach (var lyric in lyricDataResult.Lyrics.Lines) { }
             }
             [Benchmark]
 
             public void KfStormLrcParser()
             {
-                for(int i = 0;i<10000 ;i++) 
-                {
-                    var lyricDataResult = LrcFile.FromText(SongLyric);
-                }
-                
+                var lyricDataResult = LrcFile.FromText(SongLyric);
+                foreach (var lyric in lyricDataResult.Lyrics) { }
             }
 
             [Benchmark]
 
             public void HyPlayerPraser()
             {
-                for (int i = 0; i < 10000; i++)
+                using (var lyricDataResult = LyricParser.ParseLrcLyrics(SongLyric))
                 {
-                    var lyricDataResult = LyricParser.ParseLrcLyrics(SongLyric);
+                    foreach (var lyric in lyricDataResult.LyricsLines) { }
                 }
             }
             [Benchmark]
             public void HyPlayerKaraokePraser()
             {
-                for (int i = 0; i < 10000; i++)
+                using (var lyricDataResult = LyricParser.ParseKaraokeLyrics(KaraokeLyric))
                 {
-                    var lyricDataResult = LyricParser.ParseKaraokeLyrics(KaraokeLyric);
+                    foreach (var lyric in lyricDataResult.LyricsLines) { }
                 }
             }
         }
