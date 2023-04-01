@@ -8,8 +8,10 @@ namespace LrcParser.Implementation
 {
     public static class LyricParser
     {
-        private static readonly Regex LrcTimestampRegex = new Regex(@"\[(?'minutes'\d+):(?'seconds'\d+(\.\d+)?)\]");
-        private static readonly Regex LrcOffsetRegex = new Regex(@"\[offset:(?'content'.*)\]");
+        private static readonly Regex LrcTimestampRegex = new Regex(@"\[(?'minutes'\d+):(?'seconds'\d+(\.\d+)?)\]", RegexOptions.Compiled);
+        private static readonly Regex LrcOffsetRegex = new Regex(@"\[offset:(?'content'.*)\]", RegexOptions.Compiled);
+        private static readonly Regex KaraokeWordRegex = new Regex(@"\(([0-9]*),([0-9]*),0\)", RegexOptions.Compiled);
+        private static readonly Regex KaraokeWordInfosRegex = new Regex(@"\([0-9]*,[0-9]*,0\)", RegexOptions.Compiled);
         public static LyricsData ParseKaraokeLyrics(string karaokeLyrics)
         {
             var rawLyricList = karaokeLyrics.Split('\n').ToList();
@@ -20,8 +22,8 @@ namespace LrcParser.Implementation
                 var rawTimestamp = lyricLine.Substring(1, lyricLine.IndexOf(',', 1) - 1);
                 var timestamp = double.Parse(rawTimestamp);
                 var rawLyricData = lyricLine.Substring(lyricLine.IndexOf(']') + 1);
-                var lyricWords = Regex.Split(rawLyricData, "\\([0-9]*,[0-9]*,0\\)").ToList().Skip(1).ToList();
-                var lyricWordInfos = Regex.Matches(rawLyricData, "\\(([0-9]*),([0-9]*),0\\)").ToList();
+                var lyricWords = KaraokeWordRegex.Split(rawLyricData).ToList().Skip(1).ToList();
+                var lyricWordInfos = KaraokeWordInfosRegex.Matches(rawLyricData).ToList();
                 var wordInfoList = new List<KaraokeWordInfo>();
                 for (var index = 0; index < lyricWordInfos.Count; index++)
                 {
