@@ -10,8 +10,8 @@ namespace LrcParser.Implementation
     {
         private static readonly Regex LrcTimestampRegex = new Regex(@"\[(?'minutes'\d+):(?'seconds'\d+(\.\d+)?)\]", RegexOptions.Compiled);
         private static readonly Regex LrcOffsetRegex = new Regex(@"\[offset:(?'content'.*)\]", RegexOptions.Compiled);
-        private static readonly Regex KaraokeWordRegex = new Regex(@"\(([0-9]*),([0-9]*),0\)", RegexOptions.Compiled);
-        private static readonly Regex KaraokeWordInfosRegex = new Regex(@"\([0-9]*,[0-9]*,0\)", RegexOptions.Compiled);
+        private static readonly Regex KaraokeWordRegex = new Regex(@"\([0-9]*,[0-9]*,0\)", RegexOptions.Compiled);
+        private static readonly Regex KaraokeWordInfosRegex = new Regex(@"\(([0-9]*),([0-9]*),0\)", RegexOptions.Compiled);
         public static LyricsData ParseKaraokeLyrics(string karaokeLyrics)
         {
             var rawLyricList = karaokeLyrics.Split('\n').ToList();
