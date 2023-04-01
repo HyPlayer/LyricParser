@@ -57,6 +57,7 @@ namespace MyBenchmarks
                     var lyricDataResult = LyricParser.ParseLrcLyrics(SongLyric);
                 }
             }
+            [Benchmark]
             public void HyPlayerKaraokePraser()
             {
                 for (int i = 0; i < 10000; i++)
