@@ -50,11 +50,18 @@ namespace MyBenchmarks
 
             [Benchmark]
 
-            public void HyPlayerPraser() 
+            public void HyPlayerPraser()
             {
                 for (int i = 0; i < 10000; i++)
                 {
                     var lyricDataResult = LyricParser.ParseLrcLyrics(SongLyric);
+                }
+            }
+            public void HyPlayerKaraokePraser()
+            {
+                for (int i = 0; i < 10000; i++)
+                {
+                    var lyricDataResult = LyricParser.ParseKaraokeLyrics(KaraokeLyric);
                 }
             }
         }
