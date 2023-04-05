@@ -41,7 +41,7 @@ namespace MyBenchmarks
                 {
                 }
             }
-            //[Benchmark]
+            [Benchmark]
 
             public void KfStormLrcParser()
             {
@@ -51,7 +51,7 @@ namespace MyBenchmarks
                 }
             }
 
-            //[Benchmark]
+            [Benchmark]
 
             public void HyPlayerParser()
             {
@@ -72,7 +72,7 @@ namespace MyBenchmarks
                 }
             }
             
-            //[Benchmark]
+            [Benchmark]
             public void HyPlayerKaraokePraser()
             {
                 using (var lyricDataResult = LyricParser.ParseKaraokeLyrics(KaraokeLyric))
@@ -86,10 +86,10 @@ namespace MyBenchmarks
 
         public static void Main(string[] args)
         {
-            LrcParser.Implementation.LrcParser.ParseLrc(File.ReadAllText("LrcDemo.txt"));
-            return;
+            //LrcParser.Implementation.LrcParser.ParseLrc(File.ReadAllText("LrcDemo.txt"));
+            //return;
             var summary = BenchmarkRunner.Run<RegexPraserVsLrcParser>();
-            Console.ReadLine();
+            Console.WriteLine("Benchmark for fun, don't be serious");
         }
     }
 }
