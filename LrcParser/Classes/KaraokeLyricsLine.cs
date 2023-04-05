@@ -10,9 +10,9 @@ namespace LrcParser.Classes
 
         public string CurrentLyric { get; }
 
-        public TimeSpan StartTime { get; }
+        public int StartTime { get; }
 
-        public KaraokeLyricsLine(IList<KaraokeWordInfo> wordInfos, TimeSpan startTime)
+        public KaraokeLyricsLine(IList<KaraokeWordInfo> wordInfos, int startTime)
         {
             WordInfos = wordInfos;
             StartTime = startTime;
