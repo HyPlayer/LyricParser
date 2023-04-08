@@ -56,8 +56,23 @@ public static class LrcParser
                     }
                     else
                     {
-                        i -= 1;
-                        state = CurrentState.Lyric;
+                        // Sum up
+                        for (int j = 0; j < curTimestamps.Length; j++)
+                        {
+                            if (curTimestamps[j] == -1) break;
+                            lines.Add(new LrcLyricsLine(
+                                input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
+                                curTimestamps[j]));
+                        }
+
+                        if(i+1 < input.Length)
+                        {
+                            if ((input[i + 1] == '\n' || input[i + 1] == '\r')) i++;
+                        }
+                        // Change State
+                        currentTimestampPosition = 0;
+                        state = CurrentState.None;
+                        continue;
                     }
 
                     break;

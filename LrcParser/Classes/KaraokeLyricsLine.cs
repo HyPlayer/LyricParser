@@ -5,7 +5,7 @@ namespace LrcParser.Classes
 {
     public class KaraokeLyricsLine : ILyricLine
     {
-        public IList<KaraokeWordInfo> WordInfos { get; }
+        public IReadOnlyList<KaraokeWordInfo> WordInfos { get; }
 
         public string CurrentLyric { get; }
 
@@ -15,7 +15,7 @@ namespace LrcParser.Classes
 
         public KaraokeLyricsLine(IList<KaraokeWordInfo> wordInfos, int startTime, int duration)
         {
-            WordInfos = wordInfos;
+            WordInfos = wordInfos.ToList();
             StartTime = startTime;
             Duration = duration;
             var currentLyric = string.Concat(wordInfos.Select(t => t.CurrentWords).ToList());

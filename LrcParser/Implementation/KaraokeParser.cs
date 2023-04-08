@@ -24,7 +24,10 @@ namespace LrcParser.Implementation
 
                 if (curChar == '\n' || curChar == '\r')
                 {
-                    if (input[i + 1] is '\n' or '\r') i++;
+                    if (i + 1 < input.Length)
+                    {
+                        if ((input[i + 1] == '\n' || input[i + 1] == '\r')) i++;
+                    }
                     state = CurrentState.None;
                     karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
                     lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricTimespan, lyricDuration));
