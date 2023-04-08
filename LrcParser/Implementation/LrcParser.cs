@@ -123,8 +123,8 @@ public static class LrcParser
                         }
                         else
                         {
-                            var pow = i - curStateStartPosition - 2;
-                            curTimestamp = curTimestamp + timeCalculationCache * (int)Math.Pow(10, pow);
+                            var pow = i - curStateStartPosition - 1; // 几位小数
+                            curTimestamp = curTimestamp + timeCalculationCache * (int)Math.Pow(10, 3 - pow);
                             curTimestamps[currentTimestampPosition++] = curTimestamp;
                             isCalculatingMicrosecond = false;
                             timeCalculationCache = 0;
@@ -149,7 +149,7 @@ public static class LrcParser
                             continue;
                         case ']':
                             // 无毫秒数需要从此跳出
-                            curTimestamps[currentTimestampPosition++] = curTimestamp;
+                            curTimestamps[currentTimestampPosition++] = timeCalculationCache * 1000;
                             timeCalculationCache = 0;
                             curStateStartPosition = i;
                             curTimestamp = 0;
