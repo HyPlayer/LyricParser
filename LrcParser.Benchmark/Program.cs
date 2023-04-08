@@ -1,11 +1,7 @@
-﻿using System;
-using System.Security.Cryptography;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using LrcParser.Implementation;
 using Kfstorm.LrcParser;
-using LrcParser.Classes;
-using Microsoft.Diagnostics.Tracing.Parsers.JScript;
+using LrcParser.Implementation;
 using Opportunity.LrcParser;
 
 namespace MyBenchmarks
@@ -71,7 +67,7 @@ namespace MyBenchmarks
                 {
                 }
             }
-            
+
             [Benchmark]
             public void HyPlayerKaraokePraser()
             {
@@ -80,16 +76,24 @@ namespace MyBenchmarks
                     foreach (var lyric in lyricDataResult.LyricsLines)
                     {
                     }
+
+                }
+            }
+            [Benchmark]
+            public void HyPlayerNewKaraokePraser()
+            {
+                var lyricDataResult = KaraokeParser.ParseKaraoke(KaraokeLyric);
+                foreach (var lyric in lyricDataResult)
+                {
                 }
             }
         }
 
         public static void Main(string[] args)
         {
-            //LrcParser.Implementation.LrcParser.ParseLrc(File.ReadAllText("LrcDemo.txt"));
-            //return;
             var summary = BenchmarkRunner.Run<RegexPraserVsLrcParser>();
             Console.WriteLine("Benchmark for fun, don't be serious");
+            Console.ReadLine();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LrcParser.Classes
+﻿namespace LrcParser.Classes
 {
     public interface ILyricLine
     {

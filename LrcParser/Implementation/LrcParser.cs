@@ -1,9 +1,7 @@
-﻿using System;
+﻿using LrcParser.Classes;
+using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using LrcParser.Classes;
 
 namespace LrcParser.Implementation;
 
@@ -65,7 +63,7 @@ public static class LrcParser
                     break;
 
                 case CurrentState.None:
-                    Array.Fill(curTimestamps,-1);
+                    Array.Fill(curTimestamps, -1);
                     if (curChar == '[')
                     {
                         state = CurrentState.AwaitingState;

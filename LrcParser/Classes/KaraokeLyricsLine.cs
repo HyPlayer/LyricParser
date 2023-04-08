@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace LrcParser.Classes
@@ -12,10 +11,13 @@ namespace LrcParser.Classes
 
         public int StartTime { get; }
 
-        public KaraokeLyricsLine(IList<KaraokeWordInfo> wordInfos, int startTime)
+        public int Duration { get; }
+
+        public KaraokeLyricsLine(IList<KaraokeWordInfo> wordInfos, int startTime, int duration)
         {
             WordInfos = wordInfos;
             StartTime = startTime;
+            Duration = duration;
             var currentLyric = string.Concat(wordInfos.Select(t => t.CurrentWords).ToList());
             CurrentLyric = currentLyric;
         }

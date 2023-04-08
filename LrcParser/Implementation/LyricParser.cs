@@ -34,14 +34,14 @@ namespace LrcParser.Implementation
                 for (var index = 0; index < lyricWordInfos.Count; index++)
                 {
                     if (lyricWordInfos[index].Length <= 0) continue;
-                    var startTime = double.Parse(lyricWordInfos[index].Groups[1].Value);
-                    var duration = double.Parse(lyricWordInfos[index].Groups[2].Value);
+                    var startTime = int.Parse(lyricWordInfos[index].Groups[1].Value);
+                    var duration = int.Parse(lyricWordInfos[index].Groups[2].Value);
                     var wordInfo = new KaraokeWordInfo(string.Concat(lyricWords[index]),
-                        TimeSpan.FromMilliseconds(startTime), TimeSpan.FromMilliseconds(duration));
+                        startTime, duration);
                     wordInfoList.Add(wordInfo);
                 }
 
-                var resultLyricLine = new KaraokeLyricsLine(wordInfoList, timestamp);
+                var resultLyricLine = new KaraokeLyricsLine(wordInfoList, timestamp, 0);
                 resultLyricList.Add(resultLyricLine);
             }
 
