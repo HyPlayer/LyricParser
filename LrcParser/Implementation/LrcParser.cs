@@ -1,7 +1,8 @@
-﻿using LrcParser.Classes;
-using System;
+﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
+using LrcParser.Classes;
 
 namespace LrcParser.Implementation;
 
@@ -52,31 +53,15 @@ public static class LrcParser
                 case CurrentState.PossiblyLyric:
                     if (curChar == '[')
                     {
-                        state = CurrentState.AwaitingState;
+                        state = CurrentState.AwaitingStateLyric;
                     }
                     else
                     {
-                        // Sum up
-                        for (int j = 0; j < curTimestamps.Length; j++)
-                        {
-                            if (curTimestamps[j] == -1) break;
-                            lines.Add(new LrcLyricsLine(
-                                input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
-                                curTimestamps[j]));
-                        }
-
-                        if(i+1 < input.Length)
-                        {
-                            if ((input[i + 1] == '\n' || input[i + 1] == '\r')) i++;
-                        }
-                        // Change State
-                        currentTimestampPosition = 0;
-                        state = CurrentState.None;
-                        continue;
+                        i -= 1;
+                        state = CurrentState.Lyric;
                     }
 
                     break;
-
                 case CurrentState.None:
                     Array.Fill(curTimestamps, -1);
                     if (curChar == '[')
@@ -98,6 +83,22 @@ public static class LrcParser
                     {
                         state = CurrentState.Attribute;
                         curStateStartPosition = i;
+                    }
+
+                    break;
+                case CurrentState.AwaitingStateLyric:
+                    if (47 < curChar && curChar < 57)
+                    {
+                        // Time
+                        state = CurrentState.Timestamp;
+                        curStateStartPosition = i;
+                        curTimestamp = 0;
+                        i--;
+                    }
+                    else
+                    {
+                        state = CurrentState.Lyric;
+                        curStateStartPosition = i - 2;
                     }
 
                     break;
@@ -128,6 +129,7 @@ public static class LrcParser
                             isCalculatingMicrosecond = false;
                             timeCalculationCache = 0;
                             curStateStartPosition = i;
+                            curTimestamp = 0;
                             state = CurrentState.PossiblyLyric;
                             continue;
                         }
@@ -145,6 +147,14 @@ public static class LrcParser
                             isCalculatingMicrosecond = true;
                             timeCalculationCache = 0;
                             continue;
+                        case ']':
+                            // 无毫秒数需要从此跳出
+                            curTimestamps[currentTimestampPosition++] = curTimestamp;
+                            timeCalculationCache = 0;
+                            curStateStartPosition = i;
+                            curTimestamp = 0;
+                            state = CurrentState.PossiblyLyric;
+                            continue;
                         default:
                             timeCalculationCache = timeCalculationCache * 10 + curChar - 48;
                             break;
@@ -155,6 +165,7 @@ public static class LrcParser
                     throw new ArgumentOutOfRangeException();
             }
         }
+
         ArrayPool<int>.Shared.Return(curTimestamps, true);
         return lines;
     }
@@ -163,6 +174,7 @@ public static class LrcParser
     {
         None,
         AwaitingState,
+        AwaitingStateLyric,
         Attribute,
         AttributeContent,
         Timestamp,
