@@ -1,4 +1,4 @@
-﻿namespace LrcParser.Classes
+﻿namespace LyricParser.Classes
 {
     public interface ILyricLine
     {

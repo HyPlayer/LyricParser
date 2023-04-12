@@ -2,9 +2,9 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using LrcParser.Classes;
+using LyricParser.Classes;
 
-namespace LrcParser.Implementation;
+namespace LyricParser.Implementation;
 
 public static class LrcParser
 {

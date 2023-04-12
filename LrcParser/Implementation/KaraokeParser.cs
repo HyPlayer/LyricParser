@@ -1,9 +1,9 @@
-﻿using LrcParser.Classes;
+﻿using LyricParser.Classes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LrcParser.Implementation
+namespace LyricParser.Implementation
 {
     public static class KaraokeParser
     {
