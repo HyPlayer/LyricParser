@@ -17,39 +17,52 @@ namespace LyricParser.Implementation
             var curTimestamps = ArrayPool<int>.Shared.Rent(16); // Max Count 
             int curTimestamp = 0;
             int currentTimestampPosition = 0;
+            var reachesEnd = false;
             var state = CurrentState.None;
             for (var i = 0; i < input.Length; i++)
             {
                 ref readonly var curChar = ref input[i];
-
                 // 剥离开, 方便 分支预测
                 if (state == CurrentState.Lyric)
                 {
-                    if (curChar != '\n' && curChar != '\r')
+                    if (curChar != '\n' && curChar != '\r' && i+ 1 < input.Length)
                     {
                         continue;
                     }
                     else
                     {
-                        // Sum up
-                        for (int j = 0; j < curTimestamps.Length; j++)
-                        {
-                            if (curTimestamps[j] == -1) break;
-                            lines.Add(new LrcLyricsLine(
-                                input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
-                                curTimestamps[j]));
-                        }
                         if (i + 1 < input.Length)
                         {
+                            for (int j = 0; j < curTimestamps.Length; j++)
+                            {
+                                if (curTimestamps[j] == -1) break;
+                                lines.Add(new LrcLyricsLine(
+                                    input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
+                                    curTimestamps[j]));
+                            }
                             if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
-                        }                        
-                        // Change State
-                        currentTimestampPosition = 0;
-                        state = CurrentState.None;
-                        continue;
+                            currentTimestampPosition = 0;
+                            // Change State
+                            state = CurrentState.None;
+                            continue;
+                        }
+                        if(i+1==input.Length)
+                        {
+                            reachesEnd = true;
+                        }
                     }
                 }
-
+                if (reachesEnd)
+                {
+                    for (int j = 0; j < curTimestamps.Length; j++)
+                    {
+                        if (curTimestamps[j] == -1) break;
+                        lines.Add(new LrcLyricsLine(
+                            input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
+                            curTimestamps[j]));
+                    }
+                    continue;
+                }
                 switch (state)
                 {
                     case CurrentState.PossiblyLyric:
@@ -136,7 +149,6 @@ namespace LyricParser.Implementation
                                 continue;
                             }
                         }
-
                         switch (curChar)
                         {
                             case ':':
