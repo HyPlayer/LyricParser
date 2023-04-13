@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LrcParser\LyricParser.csproj" />
+    <ProjectReference Include="..\LyricParser\LyricParser.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace LyricParser.Classes
+namespace LyricParser.Abstraction
 {
     public class KaraokeLyricsLine : ILyricLine
     {

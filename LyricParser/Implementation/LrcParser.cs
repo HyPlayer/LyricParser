@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using LyricParser.Classes;
+using LyricParser.Abstraction;
 
 namespace LyricParser.Implementation;
 

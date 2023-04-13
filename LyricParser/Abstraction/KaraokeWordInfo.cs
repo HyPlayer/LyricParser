@@ -1,4 +1,4 @@
-﻿namespace LyricParser.Classes
+﻿namespace LyricParser.Abstraction
 {
     public class KaraokeWordInfo
     {

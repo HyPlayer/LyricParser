@@ -1,4 +1,4 @@
-﻿using LyricParser.Classes;
+﻿using LyricParser.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Text;
