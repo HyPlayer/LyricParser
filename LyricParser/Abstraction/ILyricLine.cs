@@ -2,7 +2,7 @@
 {
     public interface ILyricLine
     {
-        public string CurrentLyric { get; }
-        public int StartTime { get; }
+        string CurrentLyric { get; }
+        int StartTime { get; }
     }
 }

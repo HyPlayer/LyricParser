@@ -9,7 +9,7 @@ namespace LyricParser.Implementation
     {
         public static List<ILyricLine> ParseKaraoke(ReadOnlySpan<char> input)
         {
-            List<ILyricLine> lines = new();
+            List<ILyricLine> lines = new List<ILyricLine>();
             List<KaraokeWordInfo> karaokeWordInfos = new List<KaraokeWordInfo>();
             var timespanStringBuilder = new StringBuilder();
             var lyricStringBuilder = new StringBuilder();
