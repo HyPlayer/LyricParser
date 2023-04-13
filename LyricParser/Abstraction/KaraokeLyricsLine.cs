@@ -7,7 +7,18 @@ namespace LyricParser.Abstraction
     {
         public IReadOnlyList<KaraokeWordInfo> WordInfos { get; }
 
-        public string CurrentLyric => string.Concat(WordInfos.Select(t => t.CurrentWords).ToArray());
+        public string CurrentLyric
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_currentLyric))
+                {
+                    _currentLyric = string.Concat(WordInfos.Select(t => t.CurrentWords).ToArray());
+                }
+                return _currentLyric;
+            }
+        }
+        private string _currentLyric = string.Empty;
 
         public int StartTime { get; }
 

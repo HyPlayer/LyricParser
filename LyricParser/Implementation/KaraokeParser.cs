@@ -18,24 +18,33 @@ namespace LyricParser.Implementation
             var wordTimespan = 0;
             var wordDuration = 0;
             var state = CurrentState.None;
+            var reachesEnd = false;
             for (var i = 0; i < input.Length; i++)
             {
                 if (i != input.Length)
                 {
                     ref readonly var curChar = ref input[i];
 
-                    if (curChar == '\n' || curChar == '\r' || i + 1 == input.Length)
+                    if (curChar == '\n' || curChar == '\r' || i+1==input.Length)
                     {
                         if (i + 1 < input.Length)
                         {
                             if ((input[i + 1] == '\n' || input[i + 1] == '\r')) i++;
+                            karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
+                            lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricTimespan, lyricDuration));
+                            karaokeWordInfos.Clear();
+                            lyricStringBuilder.Clear();
+                            state = CurrentState.None;
+                            continue;
                         }
-                        state = CurrentState.None;
-                        karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
-                        lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricTimespan, lyricDuration));
-                        karaokeWordInfos.Clear();
-                        lyricStringBuilder.Clear();
-                        continue;
+                        if (i + 1 == input.Length)
+                        {
+                            if (!char.IsControl(curChar))
+                            {
+                                reachesEnd = true;
+                            }
+                        }
+                        
                     }
                     switch (curChar)
                     {
@@ -143,8 +152,14 @@ namespace LyricParser.Implementation
                             break;
                         case CurrentState.Lyric:
                             lyricStringBuilder.Append(curChar);
-                            break;
-
+                            break;      
+                    }
+                    if (reachesEnd)
+                    {
+                        karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
+                        lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricTimespan, lyricDuration));
+                        karaokeWordInfos.Clear();
+                        lyricStringBuilder.Clear();
                     }
                 }
             }
