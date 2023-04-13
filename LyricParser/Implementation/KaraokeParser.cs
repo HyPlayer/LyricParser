@@ -9,7 +9,7 @@ namespace LyricParser.Implementation
     {
         public static List<ILyricLine> ParseKaraoke(ReadOnlySpan<char> input)
         {
-            List<ILyricLine> lines = new();
+            List<ILyricLine> lines = new List<ILyricLine>();
             List<KaraokeWordInfo> karaokeWordInfos = new List<KaraokeWordInfo>();
             var timespanStringBuilder = new StringBuilder();
             var lyricStringBuilder = new StringBuilder();
@@ -25,11 +25,11 @@ namespace LyricParser.Implementation
                 {
                     ref readonly var curChar = ref input[i];
 
-                    if (curChar == '\n' || curChar == '\r' || i+1==input.Length)
+                    if (curChar == '\n' || curChar == '\r' || i+1 == input.Length)
                     {
                         if (i + 1 < input.Length)
                         {
-                            if ((input[i + 1] == '\n' || input[i + 1] == '\r')) i++;
+                            if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
                             karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
                             lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricTimespan, lyricDuration));
                             karaokeWordInfos.Clear();
@@ -39,12 +39,8 @@ namespace LyricParser.Implementation
                         }
                         if (i + 1 == input.Length)
                         {
-                            if (!char.IsControl(curChar))
-                            {
-                                reachesEnd = true;
-                            }
+                            reachesEnd = true;
                         }
-                        
                     }
                     switch (curChar)
                     {
@@ -151,6 +147,7 @@ namespace LyricParser.Implementation
                             timespanStringBuilder.Append(curChar);
                             break;
                         case CurrentState.Lyric:
+                            if (reachesEnd && (input[i] == '\n' || input[i] == '\r')) break;
                             lyricStringBuilder.Append(curChar);
                             break;      
                     }
