@@ -91,7 +91,7 @@ namespace LyricParser.Implementation
 
                         break;
                     case CurrentState.AwaitingState:
-                        if (47 < curChar && curChar < 57)
+                        if ('0' <= curChar && curChar <= '9')
                         {
                             // Time
                             state = CurrentState.Timestamp;
@@ -107,7 +107,7 @@ namespace LyricParser.Implementation
 
                         break;
                     case CurrentState.AwaitingStateLyric:
-                        if (47 < curChar && curChar < 57)
+                        if ('0' <= curChar && curChar <= '9')
                         {
                             // Time
                             state = CurrentState.Timestamp;
@@ -138,7 +138,7 @@ namespace LyricParser.Implementation
                         {
                             if (curChar != ']')
                             {
-                                timeCalculationCache = timeCalculationCache * 10 + curChar - 48;
+                                timeCalculationCache = timeCalculationCache * 10 + curChar - '0';
                                 continue;
                             }
                             else
@@ -175,7 +175,7 @@ namespace LyricParser.Implementation
                                 state = CurrentState.PossiblyLyric;
                                 continue;
                             default:
-                                timeCalculationCache = timeCalculationCache * 10 + curChar - 48;
+                                timeCalculationCache = timeCalculationCache * 10 + curChar - '0';
                                 break;
                         }
 
