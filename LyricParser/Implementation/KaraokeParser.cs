@@ -11,7 +11,7 @@ namespace LyricParser.Implementation
         {
             List<ILyricLine> lines = new List<ILyricLine>();
             List<KaraokeWordInfo> karaokeWordInfos = new List<KaraokeWordInfo>();
-            var timespanStringBuilder = new StringBuilder();
+            var timeSpanBuilder = 0;
             var lyricStringBuilder = new StringBuilder();
             var lyricTimespan = 0;
             var lyricDuration = 0;
@@ -65,20 +65,20 @@ namespace LyricParser.Implementation
                             if (state == CurrentState.LyricTimestamp)
                             {
                                 state = CurrentState.PossiblyLyricDuration;
-                                lyricTimespan = int.Parse(timespanStringBuilder.ToString());
-                                timespanStringBuilder.Clear();
+                                lyricTimespan = timeSpanBuilder;
+                                timeSpanBuilder = 0;
                             }
                             else if (state == CurrentState.WordTimestamp)
                             {
                                 state = CurrentState.PossiblyWordDuration;
-                                wordTimespan = int.Parse(timespanStringBuilder.ToString());
-                                timespanStringBuilder.Clear();
+                                wordTimespan = timeSpanBuilder;
+                                timeSpanBuilder = 0;
                             }
                             else
                             {
                                 state = CurrentState.WordUnknownItem;
-                                wordDuration = int.Parse(timespanStringBuilder.ToString());
-                                timespanStringBuilder.Clear();
+                                wordDuration = timeSpanBuilder;
+                                timeSpanBuilder = 0;
                             }
                             continue;
                         case ']':
@@ -90,8 +90,8 @@ namespace LyricParser.Implementation
                                 }
                             }
                             state = CurrentState.None;
-                            lyricDuration = int.Parse(timespanStringBuilder.ToString());
-                            timespanStringBuilder.Clear();
+                            lyricDuration = timeSpanBuilder;
+                            timeSpanBuilder = 0;
                             continue;
                         case '(':
                             if (state == CurrentState.Lyric)
@@ -120,31 +120,39 @@ namespace LyricParser.Implementation
                     {
                         case CurrentState.PossiblyLyricTimestamp:
                             if (char.IsNumber(curChar)) state = CurrentState.LyricTimestamp;
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.LyricTimestamp:
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.PossiblyWordTimestamp:
                             if (char.IsNumber(curChar)) state = CurrentState.WordTimestamp;
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.WordTimestamp:
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.PossiblyLyricDuration:
                             if (char.IsNumber(curChar)) state = CurrentState.LyricDuration;
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.LyricDuration:
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.PossiblyWordDuration:
                             if (char.IsNumber(curChar)) state = CurrentState.WordDuration;
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.WordDuration:
-                            timespanStringBuilder.Append(curChar);
+                            timeSpanBuilder *= 10;
+                            timeSpanBuilder += curChar - '0';
                             break;
                         case CurrentState.Lyric:
                             if (reachesEnd && (input[i] == '\n' || input[i] == '\r')) break;
