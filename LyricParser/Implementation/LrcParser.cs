@@ -12,7 +12,6 @@ namespace LyricParser.Implementation
         {
             List<ILyricLine> lines = new List<ILyricLine>();
             var curStateStartPosition = 0;
-            bool isCalculatingMicrosecond = false;
             var timeCalculationCache = 0;
             var curTimestamps = ArrayPool<int>.Shared.Rent(16); // Max Count 
             int curTimestamp = 0;
@@ -20,6 +19,7 @@ namespace LyricParser.Implementation
             var reachesEnd = false;
             var lastCharacterIsLineBreak = false;
             var state = CurrentState.None;
+            var timeSpanType = TimeSpanType.None;
             for (var i = 0; i < input.Length; i++)
             {
                 ref readonly var curChar = ref input[i];
@@ -95,6 +95,7 @@ namespace LyricParser.Implementation
                         {
                             // Time
                             state = CurrentState.Timestamp;
+                            timeSpanType = TimeSpanType.Minutes;
                             curStateStartPosition = i;
                             curTimestamp = 0;
                             i--;
@@ -111,6 +112,7 @@ namespace LyricParser.Implementation
                         {
                             // Time
                             state = CurrentState.Timestamp;
+                            timeSpanType = TimeSpanType.Minutes;
                             curStateStartPosition = i;
                             curTimestamp = 0;
                             i--;
@@ -134,7 +136,7 @@ namespace LyricParser.Implementation
                         if (curChar == ']') state = CurrentState.None;
                         break;
                     case CurrentState.Timestamp:
-                        if (isCalculatingMicrosecond)
+                        if (timeSpanType == TimeSpanType.Milliseconds)
                         {
                             if (curChar != ']')
                             {
@@ -146,7 +148,7 @@ namespace LyricParser.Implementation
                                 var pow = i - curStateStartPosition - 1; // 几位小数
                                 curTimestamp = curTimestamp + timeCalculationCache * (int)Math.Pow(10, 3 - pow);
                                 curTimestamps[currentTimestampPosition++] = curTimestamp;
-                                isCalculatingMicrosecond = false;
+                                timeSpanType = TimeSpanType.None;
                                 timeCalculationCache = 0;
                                 curStateStartPosition = i;
                                 curTimestamp = 0;
@@ -157,18 +159,26 @@ namespace LyricParser.Implementation
                         switch (curChar)
                         {
                             case ':':
-                                curTimestamp = (curTimestamp + timeCalculationCache) * 60;
-                                timeCalculationCache = 0;
-                                continue;
                             case '.':
-                                curTimestamp = (curTimestamp + timeCalculationCache) * 1000;
-                                curStateStartPosition = i;
-                                isCalculatingMicrosecond = true;
-                                timeCalculationCache = 0;
-                                continue;
+                                if (timeSpanType == TimeSpanType.Minutes)
+                                {
+                                    curTimestamp = (curTimestamp + timeCalculationCache) * 60;
+                                    timeCalculationCache = 0;
+                                    timeSpanType = TimeSpanType.Seconds;
+                                    continue;
+                                }
+                                if(timeSpanType == TimeSpanType.Seconds)
+                                {
+                                    curTimestamp = (curTimestamp + timeCalculationCache) * 1000;
+                                    curStateStartPosition = i;
+                                    timeCalculationCache = 0;
+                                    timeSpanType= TimeSpanType.Milliseconds;
+                                    continue;
+                                }
+                                throw new ArgumentOutOfRangeException();
                             case ']':
                                 // 无毫秒数需要从此跳出
-                                curTimestamps[currentTimestampPosition++] = timeCalculationCache * 1000;
+                                curTimestamps[currentTimestampPosition++] = (curTimestamp + timeCalculationCache) * 1000;
                                 timeCalculationCache = 0;
                                 curStateStartPosition = i;
                                 curTimestamp = 0;
@@ -199,6 +209,13 @@ namespace LyricParser.Implementation
             Timestamp,
             PossiblyLyric,
             Lyric
+        }
+        private enum TimeSpanType
+        {
+            Minutes,
+            Seconds,
+            Milliseconds,
+            None
         }
     }
 }
