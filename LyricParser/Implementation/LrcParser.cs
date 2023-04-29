@@ -1,8 +1,7 @@
-﻿using System;
+﻿using LyricParser.Abstraction;
+using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics;
-using LyricParser.Abstraction;
 
 namespace LyricParser.Implementation
 {
@@ -26,7 +25,7 @@ namespace LyricParser.Implementation
                 // 剥离开, 方便 分支预测
                 if (state == CurrentState.Lyric)
                 {
-                    if (curChar != '\n' && curChar != '\r' && i+ 1 < input.Length)
+                    if (curChar != '\n' && curChar != '\r' && i + 1 < input.Length)
                     {
                         continue;
                     }
@@ -47,10 +46,10 @@ namespace LyricParser.Implementation
                             state = CurrentState.None;
                             continue;
                         }
-                        if(i+1==input.Length)
+                        if (i + 1 == input.Length)
                         {
                             reachesEnd = true;
-                            if (curChar == '\r' || curChar == '\n') 
+                            if (curChar == '\r' || curChar == '\n')
                             {
                                 lastCharacterIsLineBreak = true;
                             }
@@ -167,12 +166,12 @@ namespace LyricParser.Implementation
                                     timeStampType = TimeStampType.Seconds;
                                     continue;
                                 }
-                                if(timeStampType == TimeStampType.Seconds)
+                                if (timeStampType == TimeStampType.Seconds)
                                 {
                                     curTimestamp = (curTimestamp + timeCalculationCache) * 1000;
                                     curStateStartPosition = i;
                                     timeCalculationCache = 0;
-                                    timeStampType= TimeStampType.Milliseconds;
+                                    timeStampType = TimeStampType.Milliseconds;
                                     continue;
                                 }
                                 throw new ArgumentOutOfRangeException();
