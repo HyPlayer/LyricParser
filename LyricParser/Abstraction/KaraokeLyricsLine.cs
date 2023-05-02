@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LyricParser.Abstraction
@@ -20,11 +21,11 @@ namespace LyricParser.Abstraction
         }
         private string _currentLyric = string.Empty;
 
-        public int StartTime { get; }
+        public TimeSpan StartTime { get; }
 
-        public int Duration { get; }
+        public TimeSpan Duration { get; }
 
-        public KaraokeLyricsLine(IEnumerable<KaraokeWordInfo> wordInfos, int startTime, int duration)
+        public KaraokeLyricsLine(IEnumerable<KaraokeWordInfo> wordInfos, TimeSpan startTime, TimeSpan duration)
         {
             WordInfos = wordInfos.ToList();
             StartTime = startTime;

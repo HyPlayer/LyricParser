@@ -30,8 +30,8 @@ namespace LyricParser.Implementation
                         if (i + 1 < input.Length)
                         {
                             if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
-                            karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
-                            lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricTimespan, lyricDuration));
+                            karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), TimeSpan.FromMilliseconds(wordTimespan), TimeSpan.FromMilliseconds(wordDuration)));
+                            lines.Add(new KaraokeLyricsLine(karaokeWordInfos, TimeSpan.FromMilliseconds(lyricTimespan), TimeSpan.FromMilliseconds(lyricDuration)));
                             karaokeWordInfos.Clear();
                             lyricStringBuilder.Clear();
                             state = CurrentState.None;
@@ -100,7 +100,7 @@ namespace LyricParser.Implementation
                                 {
                                     if (!char.IsNumber(input[i + 1])) break;
                                 }
-                                karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
+                                karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), TimeSpan.FromMilliseconds(wordTimespan), TimeSpan.FromMilliseconds(wordDuration)));
                                 lyricStringBuilder.Clear();
                             }
                             state = CurrentState.PossiblyWordTimestamp;
@@ -161,8 +161,8 @@ namespace LyricParser.Implementation
                     }
                     if (reachesEnd)
                     {
-                        karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), wordTimespan, wordDuration));
-                        lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricTimespan, lyricDuration));
+                        karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), TimeSpan.FromMilliseconds(wordTimespan), TimeSpan.FromMilliseconds(wordDuration)));
+                        lines.Add(new KaraokeLyricsLine(karaokeWordInfos, TimeSpan.FromMilliseconds(lyricTimespan), TimeSpan.FromMilliseconds(lyricDuration)));
                         karaokeWordInfos.Clear();
                         lyricStringBuilder.Clear();
                     }
