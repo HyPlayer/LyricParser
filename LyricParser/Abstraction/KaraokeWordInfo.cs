@@ -1,11 +1,13 @@
-﻿namespace LyricParser.Abstraction
+﻿using System;
+
+namespace LyricParser.Abstraction
 {
     public class KaraokeWordInfo
     {
         public string CurrentWords;
-        public int StartTime;
-        public int Duration;
-        public KaraokeWordInfo(string currentWords, int startTime, int duration)
+        public TimeSpan StartTime;
+        public TimeSpan Duration;
+        public KaraokeWordInfo(string currentWords, TimeSpan startTime, TimeSpan duration)
         {
             CurrentWords = currentWords;
             StartTime = startTime;
