@@ -11,7 +11,7 @@ namespace LyricParser.Implementation
         {
             List<ILyricLine> lines = new List<ILyricLine>();
             var attributeName = string.Empty;
-            Dictionary<string, string> attributes = new Dictionary<string, string>();
+            var attributes = new List<KeyValuePair<string, string>>();
             var curStateStartPosition = 0;
             var timeCalculationCache = 0;
             var curTimestamps = ArrayPool<int>.Shared.Rent(16); // Max Count 
@@ -149,7 +149,7 @@ namespace LyricParser.Implementation
                             {
                                 attributeValue = input.Slice(curStateStartPosition, i - curStateStartPosition).ToString();
                             }
-                            attributes[attributeName] = attributeValue;
+                            attributes.Add(new KeyValuePair<string, string>(attributeName, attributeValue));
                             attributeName = string.Empty;
                             state = CurrentState.None;
                             break;
