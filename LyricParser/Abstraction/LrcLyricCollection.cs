@@ -7,8 +7,8 @@ namespace LyricParser.Abstraction
     {
         private bool disposedValue;
         public IList<ILyricLine> Lines { get; }
-        public Dictionary<string, string> Attributes = new Dictionary<string, string>();
-        public LrcLyricCollection(IList<ILyricLine> lines, Dictionary<string, string> attributes)
+        public IList<KeyValuePair<string, string>> Attributes { get; }
+        public LrcLyricCollection(IList<ILyricLine> lines, IList<KeyValuePair<string, string>> attributes)
         {
             Lines = lines;
             Attributes = attributes;
