@@ -61,9 +61,12 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Abstraction\ILyricCollection.cs" />
     <Compile Include="Abstraction\ILyricLine.cs" />
+    <Compile Include="Abstraction\KaraokeLyricCollection.cs" />
     <Compile Include="Abstraction\KaraokeLyricsLine.cs" />
     <Compile Include="Abstraction\KaraokeWordInfo.cs" />
+    <Compile Include="Abstraction\LrcLyricCollection.cs" />
     <Compile Include="Abstraction\LrcLyricsLine.cs" />
     <Compile Include="Implementation\KaraokeParser.cs" />
     <Compile Include="Implementation\LrcParser.cs" />
