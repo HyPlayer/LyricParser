@@ -7,7 +7,7 @@ namespace LyricParser.Implementation
 {
     public static class KaraokeParser
     {
-        public static List<ILyricLine> ParseKaraoke(ReadOnlySpan<char> input)
+        public static ILyricCollection ParseKaraoke(ReadOnlySpan<char> input)
         {
             List<ILyricLine> lines = new List<ILyricLine>();
             List<KaraokeWordInfo> karaokeWordInfos = new List<KaraokeWordInfo>();
@@ -168,7 +168,7 @@ namespace LyricParser.Implementation
                     }
                 }
             }
-            return lines;
+            return new KaraokeLyricCollection(lines);
         }
 
         private enum CurrentState

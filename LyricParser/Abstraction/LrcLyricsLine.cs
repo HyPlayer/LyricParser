@@ -2,7 +2,7 @@
 
 namespace LyricParser.Abstraction
 {
-    public class LrcLyricsLine : ILyricLine
+    public sealed class LrcLyricsLine : ILyricLine
     {
         public string CurrentLyric { get; }
         public TimeSpan StartTime { get; }
