@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LyricParser.Abstraction
 {
-    public class KaraokeLyricsLine : ILyricLine
+    public sealed class KaraokeLyricsLine : ILyricLine
     {
         public IReadOnlyList<KaraokeWordInfo> WordInfos { get; }
 

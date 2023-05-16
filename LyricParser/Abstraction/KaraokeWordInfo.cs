@@ -2,7 +2,7 @@
 
 namespace LyricParser.Abstraction
 {
-    public class KaraokeWordInfo
+    public sealed class KaraokeWordInfo
     {
         public string CurrentWords;
         public TimeSpan StartTime;

@@ -52,7 +52,7 @@ namespace MyBenchmarks
             public void HyPlayerNewPaser()
             {
                 var result = LrcParser.ParseLrc(SongLyric);
-                foreach (var lyric in result)
+                foreach (var lyric in result.Lines)
                 {
                 }
             }
@@ -61,7 +61,7 @@ namespace MyBenchmarks
             public void HyPlayerNewKaraokePraser()
             {
                 var lyricDataResult = KaraokeParser.ParseKaraoke(KaraokeLyric);
-                foreach (var lyric in lyricDataResult)
+                foreach (var lyric in lyricDataResult.Lines)
                 {
                 }
             }

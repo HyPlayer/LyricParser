@@ -7,7 +7,7 @@ namespace LyricParser.Implementation
 {
     public static class KaraokeParser
     {
-        public static List<ILyricLine> ParseKaraoke(ReadOnlySpan<char> input)
+        public static ILyricCollection ParseKaraoke(ReadOnlySpan<char> input)
         {
             List<ILyricLine> lines = new List<ILyricLine>();
             List<KaraokeWordInfo> karaokeWordInfos = new List<KaraokeWordInfo>();
@@ -25,7 +25,7 @@ namespace LyricParser.Implementation
                 {
                     ref readonly var curChar = ref input[i];
 
-                    if (curChar == '\n' || curChar == '\r' || i+1 == input.Length)
+                    if (curChar == '\n' || curChar == '\r' || i + 1 == input.Length)
                     {
                         if (i + 1 < input.Length)
                         {
@@ -157,7 +157,7 @@ namespace LyricParser.Implementation
                         case CurrentState.Lyric:
                             if (reachesEnd && (input[i] == '\n' || input[i] == '\r')) break;
                             lyricStringBuilder.Append(curChar);
-                            break;      
+                            break;
                     }
                     if (reachesEnd)
                     {
@@ -168,7 +168,7 @@ namespace LyricParser.Implementation
                     }
                 }
             }
-            return lines;
+            return new KaraokeLyricCollection(lines);
         }
 
         private enum CurrentState

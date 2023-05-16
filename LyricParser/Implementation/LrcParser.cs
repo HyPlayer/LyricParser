@@ -1,21 +1,23 @@
-﻿using System;
+﻿using LyricParser.Abstraction;
+using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics;
-using LyricParser.Abstraction;
 
 namespace LyricParser.Implementation
 {
     public static class LrcParser
     {
-        public static List<ILyricLine> ParseLrc(ReadOnlySpan<char> input)
+        public static LrcLyricCollection ParseLrc(ReadOnlySpan<char> input)
         {
             List<ILyricLine> lines = new List<ILyricLine>();
+            var attributeName = string.Empty;
+            Dictionary<string, string> attributes = new Dictionary<string, string>();
             var curStateStartPosition = 0;
             var timeCalculationCache = 0;
             var curTimestamps = ArrayPool<int>.Shared.Rent(16); // Max Count 
             int curTimestamp = 0;
             int currentTimestampPosition = 0;
+            var offset = 0;
             var reachesEnd = false;
             var lastCharacterIsLineBreak = false;
             var state = CurrentState.None;
@@ -26,7 +28,7 @@ namespace LyricParser.Implementation
                 // 剥离开, 方便 分支预测
                 if (state == CurrentState.Lyric)
                 {
-                    if (curChar != '\n' && curChar != '\r' && i+ 1 < input.Length)
+                    if (curChar != '\n' && curChar != '\r' && i + 1 < input.Length)
                     {
                         continue;
                     }
@@ -39,7 +41,7 @@ namespace LyricParser.Implementation
                                 if (curTimestamps[j] == -1) break;
                                 lines.Add(new LrcLyricsLine(
                                     input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
-                                    TimeSpan.FromMilliseconds(curTimestamps[j])));
+                                    TimeSpan.FromMilliseconds(curTimestamps[j] + offset)));
                             }
                             if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
                             currentTimestampPosition = 0;
@@ -47,24 +49,24 @@ namespace LyricParser.Implementation
                             state = CurrentState.None;
                             continue;
                         }
-                        if(i+1==input.Length)
+                        if (i + 1 == input.Length)
                         {
                             reachesEnd = true;
-                            if (curChar == '\r' || curChar == '\n') 
+                            if (curChar == '\r' || curChar == '\n')
                             {
                                 lastCharacterIsLineBreak = true;
                             }
                         }
                     }
                 }
-                if (reachesEnd)
+                if (reachesEnd && state == CurrentState.Lyric)
                 {
                     for (int j = 0; j < curTimestamps.Length; j++)
                     {
                         if (curTimestamps[j] == -1) break;
                         lines.Add(new LrcLyricsLine(
                             input.Slice(curStateStartPosition + 1, i - curStateStartPosition - (lastCharacterIsLineBreak ? 1 : 0)).ToString(),
-                            TimeSpan.FromMilliseconds(curTimestamps[j]))); ;
+                            TimeSpan.FromMilliseconds(curTimestamps[j] + offset)));
                     }
                     continue;
                 }
@@ -127,13 +129,36 @@ namespace LyricParser.Implementation
                     case CurrentState.Attribute:
                         if (curChar == ':')
                         {
-                            //var attr = input.Slice(curStateStartPosition, i - curStateStartPosition);
+                            attributeName = input.Slice(curStateStartPosition, i - curStateStartPosition).ToString();
+                            curStateStartPosition = i + 1;
                             state = CurrentState.AttributeContent;
                         }
 
                         break;
                     case CurrentState.AttributeContent:
-                        if (curChar == ']') state = CurrentState.None;
+                        if (curChar == ']')
+                        {
+                            string attributeValue;
+                            if (attributeName == "offset")
+                            {
+                                offset = timeCalculationCache;
+                                timeCalculationCache = 0;
+                                attributeValue = offset.ToString();
+                            }
+                            else
+                            {
+                                attributeValue = input.Slice(curStateStartPosition, i - curStateStartPosition).ToString();
+                            }
+                            attributes[attributeName] = attributeValue;
+                            attributeName = string.Empty;
+                            state = CurrentState.None;
+                            break;
+                        };
+                        if (attributeName == "offset")
+                        {
+                            timeCalculationCache = timeCalculationCache * 10 + curChar - '0';
+                            continue;
+                        }
                         break;
                     case CurrentState.Timestamp:
                         if (timeStampType == TimeStampType.Milliseconds)
@@ -167,12 +192,12 @@ namespace LyricParser.Implementation
                                     timeStampType = TimeStampType.Seconds;
                                     continue;
                                 }
-                                if(timeStampType == TimeStampType.Seconds)
+                                if (timeStampType == TimeStampType.Seconds)
                                 {
                                     curTimestamp = (curTimestamp + timeCalculationCache) * 1000;
                                     curStateStartPosition = i;
                                     timeCalculationCache = 0;
-                                    timeStampType= TimeStampType.Milliseconds;
+                                    timeStampType = TimeStampType.Milliseconds;
                                     continue;
                                 }
                                 throw new ArgumentOutOfRangeException();
@@ -197,7 +222,7 @@ namespace LyricParser.Implementation
             }
 
             ArrayPool<int>.Shared.Return(curTimestamps, true);
-            return lines;
+            return new LrcLyricCollection(lines, attributes);
         }
 
         private enum CurrentState
