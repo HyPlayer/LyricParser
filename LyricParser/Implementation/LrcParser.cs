@@ -41,7 +41,7 @@ namespace LyricParser.Implementation
                                 if (curTimestamps[j] == -1) break;
                                 lines.Add(new LrcLyricsLine(
                                     input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
-                                    TimeSpan.FromMilliseconds(curTimestamps[j] + offset)));
+                                    TimeSpan.FromMilliseconds(curTimestamps[j] - offset)));
                             }
                             if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
                             currentTimestampPosition = 0;
@@ -66,7 +66,7 @@ namespace LyricParser.Implementation
                         if (curTimestamps[j] == -1) break;
                         lines.Add(new LrcLyricsLine(
                             input.Slice(curStateStartPosition + 1, i - curStateStartPosition - (lastCharacterIsLineBreak ? 1 : 0)).ToString(),
-                            TimeSpan.FromMilliseconds(curTimestamps[j] + offset)));
+                            TimeSpan.FromMilliseconds(curTimestamps[j] - offset)));
                     }
                     continue;
                 }
