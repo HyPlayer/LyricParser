@@ -4,7 +4,9 @@ namespace LyricParser.Abstraction
 {
     public interface ILyricLine
     {
-        public string CurrentLyric { get; }
-        public TimeSpan StartTime { get; }
+        string CurrentLyric { get; }
+        string LyricWithoutPunc { get; }
+        TimeSpan StartTime { get; }
+        TimeSpan? PossibleStartTime { get; set; }
     }
 }

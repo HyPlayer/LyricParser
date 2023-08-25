@@ -6,9 +6,12 @@ namespace LyricParser.Abstraction
     {
         public string CurrentLyric { get; }
         public TimeSpan StartTime { get; }
-        public LrcLyricsLine(string currentLyric, TimeSpan startTime)
+        public string LyricWithoutPunc { get; }
+        public TimeSpan? PossibleStartTime { get; set; }
+        public LrcLyricsLine(string currentLyric, string lyricWithoutPunc, TimeSpan startTime)
         {
             CurrentLyric = currentLyric;
+            LyricWithoutPunc = lyricWithoutPunc;
             StartTime = startTime;
         }
     }
