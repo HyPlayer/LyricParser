@@ -47,7 +47,7 @@ namespace LyricParser.Implementation
                                 if (curTimestamps[j] == -1) break;
                                 lines.Add(new LrcLyricsLine(
                                     input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
-                                    stringBuilder.ToString(),;
+                                    stringBuilder.ToString(),
                                     TimeSpan.FromMilliseconds(curTimestamps[j] - offset)));
                             }
                             if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
