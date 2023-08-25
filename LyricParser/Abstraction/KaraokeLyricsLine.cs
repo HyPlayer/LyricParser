@@ -20,16 +20,19 @@ namespace LyricParser.Abstraction
             }
         }
         private string _currentLyric = string.Empty;
-
         public TimeSpan StartTime { get; }
 
         public TimeSpan Duration { get; }
 
-        public KaraokeLyricsLine(IEnumerable<KaraokeWordInfo> wordInfos, TimeSpan startTime, TimeSpan duration)
+        public string LyricWithoutPunc { get; }
+        public TimeSpan? PossibleStartTime { get; set; }
+
+        public KaraokeLyricsLine(IEnumerable<KaraokeWordInfo> wordInfos, string lyricWithoutPunc, TimeSpan startTime, TimeSpan duration)
         {
             WordInfos = wordInfos.ToList();
             StartTime = startTime;
             Duration = duration;
+            LyricWithoutPunc = lyricWithoutPunc;
         }
     }
 }

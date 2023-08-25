@@ -2,6 +2,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Text;
 
 namespace LyricParser.Implementation
 {
@@ -22,6 +23,7 @@ namespace LyricParser.Implementation
             var lastCharacterIsLineBreak = false;
             var state = CurrentState.None;
             var timeStampType = TimeStampType.None;
+            var stringBuilder = new StringBuilder();
             for (var i = 0; i < input.Length; i++)
             {
                 ref readonly var curChar = ref input[i];
@@ -30,6 +32,10 @@ namespace LyricParser.Implementation
                 {
                     if (curChar != '\n' && curChar != '\r' && i + 1 < input.Length)
                     {
+                        if (!char.IsPunctuation(curChar) && !char.IsWhiteSpace(curChar))
+                        {
+                            stringBuilder.Append(curChar);
+                        }
                         continue;
                     }
                     else
@@ -41,12 +47,14 @@ namespace LyricParser.Implementation
                                 if (curTimestamps[j] == -1) break;
                                 lines.Add(new LrcLyricsLine(
                                     input.Slice(curStateStartPosition + 1, i - curStateStartPosition - 1).ToString(),
+                                    stringBuilder.ToString(),
                                     TimeSpan.FromMilliseconds(curTimestamps[j] + offset)));
                             }
                             if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
                             currentTimestampPosition = 0;
                             // Change State
                             state = CurrentState.None;
+                            stringBuilder.Clear();
                             continue;
                         }
                         if (i + 1 == input.Length)
@@ -55,6 +63,13 @@ namespace LyricParser.Implementation
                             if (curChar == '\r' || curChar == '\n')
                             {
                                 lastCharacterIsLineBreak = true;
+                            }
+                            else
+                            {
+                                if (!char.IsPunctuation(curChar) && !char.IsWhiteSpace(curChar))
+                                {
+                                    stringBuilder.Append(curChar);
+                                }
                             }
                         }
                     }
@@ -66,8 +81,10 @@ namespace LyricParser.Implementation
                         if (curTimestamps[j] == -1) break;
                         lines.Add(new LrcLyricsLine(
                             input.Slice(curStateStartPosition + 1, i - curStateStartPosition - (lastCharacterIsLineBreak ? 1 : 0)).ToString(),
+                            stringBuilder.ToString(),
                             TimeSpan.FromMilliseconds(curTimestamps[j] + offset)));
                     }
+                    stringBuilder.Clear();
                     continue;
                 }
                 switch (state)
