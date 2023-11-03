@@ -15,7 +15,7 @@ namespace LyricParser.Implementation
             var attributes = new List<KeyValuePair<string, string>>();
             var curStateStartPosition = 0;
             var timeCalculationCache = 0;
-            var curTimestamps = ArrayPool<int>.Shared.Rent(16); // Max Count 
+            var curTimestamps = ArrayPool<int>.Shared.Rent(64); // Max Count 
             int curTimestamp = 0;
             int currentTimestampPosition = 0;
             var offset = 0;
