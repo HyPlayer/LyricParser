@@ -189,6 +189,8 @@ namespace LyricParser.Implementation
                             {
                                 var pow = i - curStateStartPosition - 1; // 几位小数
                                 curTimestamp = curTimestamp + timeCalculationCache * (int)Math.Pow(10, 3 - pow);
+                                if (currentTimestampPosition + 1 >= curTimestamps.Length)
+                                    curTimestamps = ExtendIntArrayPool(curTimestamps);
                                 curTimestamps[currentTimestampPosition++] = curTimestamp;
                                 timeStampType = TimeStampType.None;
                                 timeCalculationCache = 0;
@@ -220,6 +222,8 @@ namespace LyricParser.Implementation
                                 throw new ArgumentOutOfRangeException();
                             case ']':
                                 // 无毫秒数需要从此跳出
+                                if (currentTimestampPosition + 1 >= curTimestamps.Length)
+                                    curTimestamps = ExtendIntArrayPool(curTimestamps);
                                 curTimestamps[currentTimestampPosition++] = (curTimestamp + timeCalculationCache) * 1000;
                                 timeCalculationCache = 0;
                                 curStateStartPosition = i;
@@ -259,6 +263,17 @@ namespace LyricParser.Implementation
             Seconds,
             Milliseconds,
             None
+        }
+        private static int[] ExtendIntArrayPool(int[] oldArray)
+        {
+            int newSize = oldArray.Length * 2;
+            int[] newArray = ArrayPool<int>.Shared.Rent(newSize);
+
+            Array.Fill(newArray, -1);
+            Array.Copy(oldArray, newArray, Math.Min(oldArray.Length, newSize));
+            ArrayPool<int>.Shared.Return(oldArray);
+
+            return newArray;
         }
     }
 }
