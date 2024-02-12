@@ -7,6 +7,7 @@ namespace LyricParser.Abstraction
     public sealed class KaraokeLyricsLine : ILyricLine
     {
         public IReadOnlyList<KaraokeWordInfo> WordInfos { get; }
+        public IList<KaraokeWordInfo> RomajiWordInfos { get; set; }
 
         public string CurrentLyric
         {
