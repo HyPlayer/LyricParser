@@ -46,6 +46,7 @@ namespace LyricParser.Implementation
             var newLines = new List<ILyricLine>();
             foreach(var line in source.Lines)
             {
+                if (string.IsNullOrWhiteSpace(line.CurrentLyric)) continue;
                 var lyric = FindLyric(line, target, similarity, range);
                 if (lyric != null)
                 {
