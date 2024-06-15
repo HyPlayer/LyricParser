@@ -17,6 +17,6 @@ namespace LyricParser.Abstraction
             Duration = duration;
         }
 
-        
+
     }
 }

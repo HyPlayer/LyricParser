@@ -32,7 +32,7 @@ namespace LyricParser.Implementation
                         {
                             if (input[i + 1] == '\n' || input[i + 1] == '\r') i++;
                             karaokeWordInfos.Add(new KaraokeWordInfo(lyricStringBuilder.ToString(), TimeSpan.FromMilliseconds(wordTimespan), TimeSpan.FromMilliseconds(wordDuration)));
-                            lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricWithoutPuncBuilder.ToString(),TimeSpan.FromMilliseconds(lyricTimespan), TimeSpan.FromMilliseconds(lyricDuration)));
+                            lines.Add(new KaraokeLyricsLine(karaokeWordInfos, lyricWithoutPuncBuilder.ToString(), TimeSpan.FromMilliseconds(lyricTimespan), TimeSpan.FromMilliseconds(lyricDuration)));
                             karaokeWordInfos.Clear();
                             lyricWithoutPuncBuilder.Clear();
                             lyricStringBuilder.Clear();
@@ -159,7 +159,7 @@ namespace LyricParser.Implementation
                         case CurrentState.Lyric:
                             if (reachesEnd && (input[i] == '\n' || input[i] == '\r')) break;
                             lyricStringBuilder.Append(curChar);
-                            if(!char.IsPunctuation(curChar)&&!char.IsWhiteSpace(curChar)) lyricWithoutPuncBuilder.Append(curChar);
+                            if (!char.IsPunctuation(curChar) && !char.IsWhiteSpace(curChar)) lyricWithoutPuncBuilder.Append(curChar);
                             break;
                     }
                     if (reachesEnd)

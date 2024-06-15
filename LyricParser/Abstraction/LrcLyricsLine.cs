@@ -7,14 +7,14 @@ namespace LyricParser.Abstraction
     {
         public string CurrentLyric { get; }
         public TimeSpan StartTime { get; }
-        public string LyricWithoutPunc 
-        { 
-            get 
+        public string LyricWithoutPunc
+        {
+            get
             {
-                if (string.IsNullOrEmpty(_lyricWithoutPunc)) 
+                if (string.IsNullOrEmpty(_lyricWithoutPunc))
                 {
                     var builder = new StringBuilder();
-                    foreach(var curChar in CurrentLyric)
+                    foreach (var curChar in CurrentLyric)
                     {
                         if (!char.IsPunctuation(curChar) && !char.IsWhiteSpace(curChar))
                         {
@@ -24,9 +24,11 @@ namespace LyricParser.Abstraction
                     _lyricWithoutPunc = builder.ToString();
                 }
                 return _lyricWithoutPunc;
-            } 
+            }
         }
-        private string _lyricWithoutPunc;
+#nullable enable
+        private string? _lyricWithoutPunc;
+#nullable restore
         public TimeSpan? PossibleStartTime { get; set; }
         public LrcLyricsLine(string currentLyric, TimeSpan startTime)
         {

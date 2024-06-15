@@ -1,18 +1,16 @@
-﻿using LyricParser.Abstraction;
+﻿using F23.StringSimilarity;
+using LyricParser.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using F23.StringSimilarity;
-using System.Diagnostics;
 
 namespace LyricParser.Implementation
 {
     public static class MigrationTool
     {
         private static Cosine _cosine = new Cosine();
-        private static ILyricLine FindLyric(ILyricLine lyricLine, ILyricCollection collection, double similarity, int range)
+#nullable enable
+        private static ILyricLine? FindLyric(ILyricLine lyricLine, ILyricCollection collection, double similarity, int range)
         {
             var sameTime = collection.Lines.Where(t => t.StartTime == lyricLine.StartTime);
             if (sameTime.Any())
@@ -22,7 +20,7 @@ namespace LyricParser.Implementation
             else
             {
                 var lyrics = collection.Lines.Where(t => Math.Abs((t.StartTime - lyricLine.StartTime).TotalMilliseconds) <= range).ToList();
-                if(!lyrics.Any()) 
+                if (!lyrics.Any())
                 {
                     return default;
                 }
@@ -41,10 +39,11 @@ namespace LyricParser.Implementation
             }
             return default;
         }
+#nullable restore
         public static MigrateCollection Migrate(ILyricCollection target, ILyricCollection source, double similarity = 0.80, int range = 750)
         {
             var newLines = new List<ILyricLine>();
-            foreach(var line in source.Lines)
+            foreach (var line in source.Lines)
             {
                 if (string.IsNullOrWhiteSpace(line.CurrentLyric)) continue;
                 var lyric = FindLyric(line, target, similarity, range);
